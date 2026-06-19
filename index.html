@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Viver Bem — Finanças & Metas</title>
+<meta name="description" content="App de controle de finanças, metas e rotina com IA">
+<meta name="theme-color" content="#1D9E75">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;background:#f5f4f0;}
+body{font-family:system-ui,-apple-system,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1rem;}
+:root{
+  --bg:#fff;--bg2:#f5f4f0;--border:#e8e6e0;--text:#1a1a18;--text2:#6b6960;
+  --green:#1D9E75;--gdark:#0F6E56;--glight:#EAF3DE;--gtext:#27500A;
+  --red:#A32D2D;--rlight:#FCEBEB;--rtext:#791F1F;
+  --blue:#378ADD;--blight:#E6F1FB;--btext:#0C447C;
+  --orange:#BA7517;--olight:#FAEEDA;--otext:#633806;
+  --purple:#7F77DD;--plight:#EEEDFE;--ptext:#3C3489;
+  --r:10px;--rsm:7px;
+}
+.dark{--bg:#1c1c1c;--bg2:#141414;--border:#2e2e2e;--text:#e0ddd8;--text2:#888;}
+.dark body{background:#111;}
+
+/* WRAP */
+.wrap{width:100%;max-width:1100px;min-height:680px;background:var(--bg);border-radius:16px;border:.5px solid var(--border);overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.08);transition:background .25s;}
+
+/* LOGIN */
+.screen{display:none;min-height:680px;}
+.screen.active{display:flex;}
+.login-screen{align-items:center;justify-content:center;padding:2rem;background:var(--bg);}
+.login-box{width:100%;max-width:340px;}
+.login-logo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:1.75rem;}
+.login-logo-icon{width:48px;height:48px;border-radius:12px;background:var(--green);display:flex;align-items:center;justify-content:center;}
+.login-logo-txt{font-size:24px;font-weight:700;color:var(--text);}
+.login-card{background:var(--bg);border:.5px solid var(--border);border-radius:var(--r);padding:1.5rem;}
+.login-title{font-size:17px;font-weight:500;color:var(--text);margin-bottom:3px;}
+.login-sub{font-size:13px;color:var(--text2);margin-bottom:1.1rem;}
+.tabs{display:flex;border:.5px solid var(--border);border-radius:var(--rsm);overflow:hidden;margin-bottom:1.1rem;}
+.tab{flex:1;padding:8px;font-size:13px;border:none;background:transparent;color:var(--text2);cursor:pointer;}
+.tab.active{background:var(--bg2);color:var(--text);font-weight:500;}
+.fg{display:flex;flex-direction:column;gap:3px;margin-bottom:10px;}
+.fl{font-size:12px;color:var(--text2);}
+.fi{padding:9px 11px;border-radius:var(--rsm);font-size:13px;border:.5px solid var(--border);background:var(--bg);color:var(--text);width:100%;}
+.fi:focus{outline:none;border-color:var(--green);}
+.btn-g{width:100%;padding:10px;border-radius:var(--rsm);font-size:13px;border:.5px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:11px;font-weight:500;}
+.btn-g:hover{background:var(--bg2);}
+.btn-email{width:100%;padding:10px;border-radius:var(--rsm);font-size:13px;border:none;background:var(--green);color:#fff;cursor:pointer;font-weight:500;margin-bottom:10px;}
+.btn-email:hover{background:var(--gdark);}
+.btn-email:disabled{background:var(--bg2);color:var(--text2);cursor:not-allowed;}
+.divider{display:flex;align-items:center;gap:10px;margin-bottom:11px;}
+.divider-line{flex:1;height:.5px;background:var(--border);}
+.divider-txt{font-size:11px;color:var(--text2);}
+.err-box{background:var(--rlight);border:.5px solid #F09595;border-radius:var(--rsm);padding:8px 11px;font-size:12px;color:var(--rtext);margin-bottom:10px;display:none;align-items:center;gap:7px;}
+.suc-box{background:var(--glight);border:.5px solid #97C459;border-radius:var(--rsm);padding:8px 11px;font-size:12px;color:var(--gtext);margin-bottom:10px;display:none;align-items:center;gap:7px;}
+
+/* APP */
+.app-screen{flex-direction:row;}
+.sb{width:195px;background:var(--bg2);border-right:.5px solid var(--border);padding:1rem .875rem;display:flex;flex-direction:column;gap:2px;flex-shrink:0;min-height:680px;}
+.logo{font-size:15px;font-weight:600;color:var(--text);padding:0 9px;margin-bottom:1rem;display:flex;align-items:center;gap:7px;}
+.logo i{color:var(--green);}
+.ni{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:var(--rsm);font-size:13px;color:var(--text2);cursor:pointer;border:none;background:transparent;width:100%;text-align:left;transition:background .12s;}
+.ni:hover{background:var(--bg);}
+.ni.active{background:var(--bg);color:var(--text);font-weight:500;border:.5px solid var(--border);}
+.ni i{font-size:15px;width:16px;}
+.nsp{flex:1;}
+.user-mini{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:var(--rsm);cursor:pointer;border:none;background:transparent;width:100%;}
+.user-mini:hover{background:var(--bg);}
+.u-av{width:26px;height:26px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;font-weight:600;flex-shrink:0;}
+.u-nm{font-size:12px;color:var(--text);font-weight:500;flex:1;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.main{flex:1;overflow:hidden;position:relative;}
+.page{display:none;height:680px;overflow-y:auto;padding:1.1rem 1.25rem;}
+.page.active{display:block;}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+.ptitle{font-size:17px;font-weight:500;color:var(--text);}
+.card{background:var(--bg);border:.5px solid var(--border);border-radius:var(--r);padding:1rem 1.1rem;}
+.card2{background:var(--bg2);border-radius:var(--r);padding:1rem 1.1rem;}
+.stitle{font-size:13px;font-weight:500;color:var(--text);margin-bottom:.875rem;}
+.mg{display:grid;gap:9px;margin-bottom:11px;}
+.mg3{grid-template-columns:repeat(3,1fr);}
+.mg4{grid-template-columns:repeat(4,1fr);}
+.mc{background:var(--bg2);border-radius:var(--rsm);padding:.875rem;}
+.ml{font-size:11px;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em;}
+.mv{font-size:18px;font-weight:500;color:var(--text);}
+.ms{font-size:11px;color:var(--text2);margin-top:3px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.pb{height:6px;background:var(--bg2);border-radius:999px;overflow:hidden;}
+.pf{height:100%;border-radius:999px;}
+.btnp{display:flex;align-items:center;gap:6px;padding:7px 13px;border-radius:var(--rsm);font-size:13px;font-weight:500;background:var(--green);color:#fff;border:none;cursor:pointer;}
+.btnp:hover{background:var(--gdark);}
+.btnp:disabled{background:var(--bg2);color:var(--text2);cursor:not-allowed;}
+.btns{padding:6px 12px;border-radius:var(--rsm);font-size:13px;border:.5px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;}
+.btns:hover{background:var(--bg2);}
+.modal-bg{display:none;position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.38);border-radius:16px;align-items:center;justify-content:center;z-index:100;}
+.modal-bg.open{display:flex;}
+.modal{background:var(--bg);border-radius:var(--r);border:.5px solid var(--border);padding:1.25rem;width:295px;}
+.mt{font-size:15px;font-weight:500;color:var(--text);margin-bottom:.875rem;}
+.ma{display:flex;gap:8px;margin-top:.875rem;}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;flex-shrink:0;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.loading-overlay{position:absolute;top:0;left:0;right:0;bottom:0;background:var(--bg);display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px;z-index:50;border-radius:16px;}
+.loading-overlay.show{display:flex;}
+.spinner{width:36px;height:36px;border:3px solid var(--border);border-top:3px solid var(--green);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:9px 18px;border-radius:var(--rsm);font-size:13px;opacity:0;pointer-events:none;transition:opacity .25s;white-space:nowrap;z-index:9999;}
+.toast.show{opacity:1;}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+</style>
+</head>
+<body>
+<div class="wrap" id="wrap">
+
+  <!-- LOGIN -->
+  <div class="screen login-screen active" id="tela-login">
+    <div class="login-box">
+      <div class="login-logo">
+        <div class="login-logo-icon"><i class="ti ti-leaf" style="color:#fff;font-size:24px;"></i></div>
+        <div class="login-logo-txt">Viver Bem</div>
+      </div>
+      <div class="login-card">
+        <div class="login-title">Bem-vindo!</div>
+        <div class="login-sub">Entre para acessar suas finanças e metas.</div>
+        <div class="tabs">
+          <button class="tab active" id="tab-e" onclick="setTab('entrar')">Entrar</button>
+          <button class="tab" id="tab-c" onclick="setTab('criar')">Criar conta</button>
+        </div>
+        <div class="err-box" id="err"><i class="ti ti-alert-circle"></i><span id="err-txt"></span></div>
+        <div class="suc-box" id="suc"><i class="ti ti-circle-check"></i><span id="suc-txt"></span></div>
+        <button class="btn-g" onclick="loginGoogle()">
+          <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+          Continuar com Google
+        </button>
+        <div class="divider"><div class="divider-line"></div><div class="divider-txt">ou</div><div class="divider-line"></div></div>
+        <div id="campo-nome" style="display:none;" class="fg"><label class="fl">Nome completo</label><input class="fi" id="inp-nome" placeholder="Seu nome"></div>
+        <div class="fg"><label class="fl">E-mail</label><input class="fi" type="email" id="inp-email" placeholder="seu@email.com"></div>
+        <div class="fg"><label class="fl">Senha</label><input class="fi" type="password" id="inp-senha" placeholder="Mínimo 6 caracteres"></div>
+        <div id="campo-conf" style="display:none;" class="fg"><label class="fl">Confirmar senha</label><input class="fi" type="password" id="inp-conf" placeholder="Repita a senha"></div>
+        <button class="btn-email" id="btn-acao" onclick="acaoEmail()">Entrar</button>
+        <div style="text-align:center;" id="esqueci-wrap">
+          <button onclick="esqueci()" style="background:transparent;border:none;font-size:12px;color:var(--text2);cursor:pointer;text-decoration:underline;">Esqueci minha senha</button>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:1rem;font-size:11px;color:var(--text2);">Viver Bem v1.0.0 · Powered by Claude IA 🤖</div>
+    </div>
+  </div>
+
+  <!-- APP -->
+  <div class="screen app-screen" id="tela-app" style="display:none;position:relative;">
+    <div class="sb">
+      <div class="logo"><i class="ti ti-leaf"></i> Viver Bem</div>
+      <button class="ni active" onclick="ir('dashboard',this)"><i class="ti ti-layout-dashboard"></i> Dashboard</button>
+      <button class="ni" onclick="ir('transacoes',this)"><i class="ti ti-arrows-exchange"></i> Transações</button>
+      <button class="ni" onclick="ir('metas',this)"><i class="ti ti-target"></i> Metas</button>
+      <button class="ni" onclick="ir('habitos',this)"><i class="ti ti-calendar"></i> Hábitos</button>
+      <button class="ni" onclick="ir('relatorios',this)"><i class="ti ti-chart-pie"></i> Relatórios</button>
+      <button class="ni" onclick="ir('sobrevivencia',this)"><i class="ti ti-mood-sad"></i> Sobrevivência</button>
+      <button class="ni" onclick="ir('rotina',this)"><i class="ti ti-brain"></i> Rotina</button>
+      <div class="nsp"></div>
+      <div style="display:flex;align-items:center;gap:6px;padding:6px 9px;margin-bottom:3px;">
+        <div class="sync-dot"></div>
+        <span style="font-size:11px;color:var(--text2);">Sincronizado</span>
+      </div>
+      <button class="user-mini" onclick="ir('config',document.querySelector('[onclick*=config]'))">
+        <div class="u-av" id="sb-av">?</div>
+        <span class="u-nm" id="sb-nm">...</span>
+        <i class="ti ti-settings" style="font-size:13px;color:var(--text2);"></i>
+      </button>
+      <button onclick="logout()" style="display:flex;align-items:center;gap:8px;padding:6px 9px;border-radius:var(--rsm);font-size:12px;color:var(--text2);border:none;background:transparent;cursor:pointer;width:100%;"><i class="ti ti-logout" style="font-size:14px;"></i> Sair</button>
+    </div>
+
+    <div class="main" id="main">
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <div class="topbar"><div><div class="ptitle" id="dg">Olá! 👋</div><div style="font-size:12px;color:var(--text2);margin-top:2px;" id="dd"></div></div><button class="btns" onclick="toggleDark()"><i class="ti ti-moon" id="dki"></i> <span id="dkt">Escurecer</span></button></div>
+        <div class="mg mg3"><div class="mc"><div class="ml">Saldo</div><div class="mv" id="d-sal">R$ 0</div></div><div class="mc"><div class="ml">Receitas</div><div class="mv" style="color:var(--green);" id="d-rec">R$ 0</div></div><div class="mc"><div class="ml">Despesas</div><div class="mv" style="color:var(--red);" id="d-des">R$ 0</div></div></div>
+        <div class="g2" style="margin-bottom:11px;"><div class="card"><div class="stitle">Últimas transações</div><div id="d-txs" style="display:flex;flex-direction:column;gap:8px;"></div><button class="btns" style="width:100%;margin-top:10px;font-size:12px;" onclick="ir('transacoes',document.querySelector('[onclick*=transacoes]'))">Ver todas →</button></div><div class="card"><div class="stitle">Metas</div><div id="d-mts" style="display:flex;flex-direction:column;gap:9px;"></div><button class="btns" style="width:100%;margin-top:10px;font-size:12px;" onclick="ir('metas',document.querySelector('[onclick*=metas]'))">Ver todas →</button></div></div>
+        <div class="card" style="cursor:pointer;background:var(--glight);border-color:#97C459;" onclick="ir('relatorios',document.querySelector('[onclick*=relatorios]'))"><div style="display:flex;align-items:center;gap:10px;"><i class="ti ti-sparkles" style="color:var(--green);font-size:20px;"></i><div><div style="font-size:13px;font-weight:500;color:var(--gtext);">Análise da IA disponível</div><div style="font-size:12px;color:var(--gtext);opacity:.8;">Ver relatório completo →</div></div></div></div>
+      </div>
+
+      <!-- TRANSAÇÕES -->
+      <div class="page" id="page-transacoes">
+        <div class="topbar"><div class="ptitle">Transações</div><button class="btnp" onclick="abrirModal('m-tx')"><i class="ti ti-plus"></i> Nova</button></div>
+        <div class="mg mg3"><div class="mc"><div class="ml">Receitas</div><div class="mv" style="color:var(--green);" id="t-rec">R$ 0</div></div><div class="mc"><div class="ml">Despesas</div><div class="mv" style="color:var(--red);" id="t-des">R$ 0</div></div><div class="mc"><div class="ml">Saldo</div><div class="mv" id="t-sal">R$ 0</div></div></div>
+        <div style="display:flex;gap:8px;margin-bottom:10px;"><input class="fi" style="flex:1;" placeholder="Buscar..." id="t-busca" oninput="renderTx()"><select class="fi" id="t-fil" onchange="renderTx()"><option value="">Todos</option><option value="receita">Receitas</option><option value="despesa">Despesas</option></select></div>
+        <div class="card" style="padding:0;overflow:hidden;"><table style="width:100%;border-collapse:collapse;"><thead><tr style="border-bottom:.5px solid var(--border);"><th style="padding:9px 12px;font-size:11px;color:var(--text2);text-align:left;font-weight:500;">DESCRIÇÃO</th><th style="padding:9px 12px;font-size:11px;color:var(--text2);text-align:left;font-weight:500;">CATEGORIA</th><th style="padding:9px 12px;font-size:11px;color:var(--text2);text-align:left;font-weight:500;">DATA</th><th style="padding:9px 12px;font-size:11px;color:var(--text2);text-align:right;font-weight:500;">VALOR</th><th></th></tr></thead><tbody id="t-body"></tbody></table></div>
+      </div>
+
+      <!-- METAS -->
+      <div class="page" id="page-metas">
+        <div class="topbar"><div class="ptitle">Metas financeiras</div><button class="btnp" onclick="abrirModal('m-meta')"><i class="ti ti-plus"></i> Nova meta</button></div>
+        <div class="mg mg3"><div class="mc"><div class="ml">Guardado</div><div class="mv" id="m-g">R$ 0</div></div><div class="mc"><div class="ml">Necessário</div><div class="mv" id="m-n">R$ 0</div></div><div class="mc"><div class="ml">Concluídas</div><div class="mv" id="m-c">0</div></div></div>
+        <div class="g2" id="m-grid"></div>
+      </div>
+
+      <!-- HÁBITOS -->
+      <div class="page" id="page-habitos">
+        <div class="topbar"><div class="ptitle">Hábitos</div><button class="btnp" onclick="abrirModal('m-hab')"><i class="ti ti-plus"></i> Novo</button></div>
+        <div class="mg mg3"><div class="mc"><div class="ml">Feitos hoje</div><div class="mv" id="h-hj">0</div></div><div class="mc"><div class="ml">Melhor streak</div><div class="mv" id="h-st">0 dias</div></div><div class="mc"><div class="ml">Taxa semanal</div><div class="mv" id="h-tx">0%</div></div></div>
+        <div id="h-list" style="display:flex;flex-direction:column;gap:10px;"></div>
+      </div>
+
+      <!-- RELATÓRIOS -->
+      <div class="page" id="page-relatorios">
+        <div class="topbar"><div class="ptitle">Relatórios</div></div>
+        <div class="mg mg4"><div class="mc"><div class="ml">Receita</div><div class="mv" style="color:var(--green);" id="r-rec">R$ 0</div></div><div class="mc"><div class="ml">Despesas</div><div class="mv" style="color:var(--red);" id="r-des">R$ 0</div></div><div class="mc"><div class="ml">Sobrou</div><div class="mv" id="r-sob">R$ 0</div></div><div class="mc"><div class="ml">Poupança</div><div class="mv" id="r-pou">0%</div></div></div>
+        <div class="card" style="margin-bottom:11px;"><div class="stitle">Gastos por categoria</div><div id="r-cat"></div></div>
+        <div class="card"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.875rem;"><div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--text);"><i class="ti ti-sparkles"></i> Análise da IA</div><button class="btnp" id="r-btn" onclick="gerarRel()"><i class="ti ti-refresh"></i> Gerar análise</button></div><div id="r-con"><div style="text-align:center;padding:1.5rem;color:var(--text2);font-size:13px;">Clique em "Gerar análise" para avaliar seus gastos com IA.</div></div></div>
+      </div>
+
+      <!-- SOBREVIVÊNCIA -->
+      <div class="page" id="page-sobrevivencia">
+        <div class="topbar"><div><div class="ptitle">Modo sobrevivência</div><div style="font-size:12px;color:var(--text2);">Vai passar. Vamos organizar.</div></div><span style="font-size:11px;background:var(--olight);color:var(--otext);padding:4px 10px;border-radius:999px;font-weight:500;">Sem renda fixa</span></div>
+        <div style="background:var(--rlight);border:.5px solid #F09595;border-radius:var(--rsm);padding:10px 13px;display:flex;gap:10px;margin-bottom:11px;"><i class="ti ti-alert-triangle" style="color:var(--red);flex-shrink:0;margin-top:1px;"></i><span style="font-size:13px;color:var(--rtext);" id="sv-al">Calculando...</span></div>
+        <div class="mg mg3"><div class="mc"><div class="ml">Reserva atual</div><div class="mv" id="sv-s">R$ 0</div></div><div class="mc"><div class="ml">Mínimo/mês</div><div class="mv" style="color:var(--orange);">R$ 780</div></div><div class="mc"><div class="ml">Tempo reserva</div><div class="mv" style="color:var(--red);" id="sv-t">—</div></div></div>
+        <div class="g2"><div class="card"><div class="stitle">O que cortar agora</div><div id="sv-cor" style="display:flex;flex-direction:column;gap:8px;"></div></div><div class="card"><div class="stitle">Checklist do dia</div><div id="sv-chk" style="display:flex;flex-direction:column;gap:8px;"></div></div></div>
+      </div>
+
+      <!-- ROTINA -->
+      <div class="page" id="page-rotina">
+        <div class="topbar"><div class="ptitle">Minha rotina</div><div style="font-size:12px;color:var(--text2);" id="rot-h"></div></div>
+        <div style="background:linear-gradient(135deg,#1D9E75,#0F6E56);border-radius:var(--r);padding:1.25rem 1.5rem;color:#fff;margin-bottom:11px;position:relative;overflow:hidden;">
+          <div style="font-size:20px;font-weight:600;" id="rot-g">Bom dia! 🌅</div>
+          <div style="font-size:12px;opacity:.7;margin-top:2px;margin-bottom:.875rem;" id="rot-d"></div>
+          <div style="font-size:13px;font-style:italic;border-left:3px solid rgba(255,255,255,.4);padding-left:10px;line-height:1.5;" id="rot-f"></div>
+          <div style="font-size:11px;opacity:.6;margin-top:5px;" id="rot-r"></div>
+          <div style="position:absolute;right:-15px;top:-15px;font-size:80px;opacity:.06;">☀️</div>
+        </div>
+        <div class="card" style="margin-bottom:11px;"><div style="display:flex;align-items:flex-start;gap:12px;"><div style="font-size:22px;" id="c-ico">🧠</div><div style="flex:1;"><div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);margin-bottom:3px;" id="c-tip">Curiosidade</div><div style="font-size:13px;color:var(--text);line-height:1.5;" id="c-txt"></div><button class="btns" style="margin-top:8px;font-size:12px;padding:4px 10px;" onclick="nextCurio()"><i class="ti ti-refresh"></i> Próxima</button></div></div></div>
+        <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:9px;">⏱ Cronômetro de estudos</div>
+        <div class="g2" id="rot-est" style="margin-bottom:11px;"></div>
+        <div class="mg mg3"><div class="mc"><div class="ml">Total hoje</div><div class="mv" id="e-tot">0h 00m</div></div><div class="mc"><div class="ml">Sessões</div><div class="mv" id="e-ses">0</div></div><div class="mc"><div class="ml">Meta diária (4h)</div><div class="mv" id="e-pct">0%</div></div></div>
+      </div>
+
+      <!-- CONFIG -->
+      <div class="page" id="page-config">
+        <div class="topbar"><div class="ptitle">Configurações</div></div>
+        <div class="card2" style="display:flex;align-items:center;gap:13px;margin-bottom:11px;"><div style="width:50px;height:50px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;font-weight:600;" id="cfg-av">?</div><div style="flex:1;"><div style="font-size:15px;font-weight:500;color:var(--text);" id="cfg-nm">—</div><div style="font-size:12px;color:var(--text2);" id="cfg-em">—</div></div></div>
+        <div class="card" style="padding:0;overflow:hidden;margin-bottom:11px;">
+          <div style="padding:8px 13px;font-size:11px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;border-bottom:.5px solid var(--border);">Aparência</div>
+          <div style="display:flex;align-items:center;gap:11px;padding:11px 13px;border-bottom:.5px solid var(--border);"><div style="width:30px;height:30px;border-radius:var(--rsm);background:var(--plight);display:flex;align-items:center;justify-content:center;"><i class="ti ti-moon" style="color:var(--purple);font-size:15px;"></i></div><div style="flex:1;font-size:13px;color:var(--text);">Modo escuro</div><label style="position:relative;width:38px;height:21px;cursor:pointer;"><input type="checkbox" id="cfg-dk" onchange="toggleDark()" style="opacity:0;position:absolute;"><span id="tgl-bg" style="position:absolute;top:0;left:0;right:0;bottom:0;background:var(--border);border-radius:999px;transition:background .2s;"></span><span id="tgl-dot" style="position:absolute;width:15px;height:15px;left:3px;top:3px;background:#fff;border-radius:50%;transition:transform .2s;"></span></label></div>
+          <div style="display:flex;align-items:center;gap:11px;padding:11px 13px;"><div style="width:30px;height:30px;border-radius:var(--rsm);background:var(--blight);display:flex;align-items:center;justify-content:center;"><i class="ti ti-currency-dollar" style="color:var(--blue);font-size:15px;"></i></div><div style="flex:1;font-size:13px;color:var(--text);">Moeda</div><select class="fi" style="width:auto;"><option>BRL (R$)</option><option>USD ($)</option><option>EUR (€)</option></select></div>
+        </div>
+        <div class="card" style="padding:0;overflow:hidden;margin-bottom:11px;">
+          <div style="padding:8px 13px;font-size:11px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;border-bottom:.5px solid var(--border);">Firebase & Sync</div>
+          <div style="display:flex;align-items:center;gap:11px;padding:11px 13px;border-bottom:.5px solid var(--border);"><div style="width:30px;height:30px;border-radius:var(--rsm);background:var(--glight);display:flex;align-items:center;justify-content:center;"><i class="ti ti-database" style="color:var(--green);font-size:15px;"></i></div><div style="flex:1;"><div style="font-size:13px;color:var(--text);">Firestore</div><div style="font-size:11px;color:var(--text2);">southamerica-east1 · São Paulo 🇧🇷</div></div><span style="font-size:11px;padding:2px 8px;border-radius:999px;background:var(--glight);color:var(--gtext);font-weight:500;">✓ Ativo</span></div>
+          <div style="display:flex;align-items:center;gap:11px;padding:11px 13px;"><div style="width:30px;height:30px;border-radius:var(--rsm);background:var(--blight);display:flex;align-items:center;justify-content:center;"><i class="ti ti-refresh" style="color:var(--blue);font-size:15px;"></i></div><div style="flex:1;"><div style="font-size:13px;color:var(--text);">Sincronização em tempo real</div><div style="font-size:11px;color:var(--text2);">Web ⇄ Android · v1.1</div></div><span style="font-size:11px;padding:2px 8px;border-radius:999px;background:var(--olight);color:var(--otext);font-weight:500;">v1.1</span></div>
+        </div>
+        <button onclick="logout()" style="width:100%;padding:10px;border-radius:var(--rsm);font-size:13px;border:.5px solid #F09595;background:transparent;color:var(--red);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;"><i class="ti ti-logout"></i> Sair da conta</button>
+        <div style="text-align:center;font-size:11px;color:var(--text2);margin-top:16px;">Viver Bem v1.0.0 · Feito no Brasil 🇧🇷 · Powered by Claude IA</div>
+      </div>
+
+      <!-- MODAIS -->
+      <div class="modal-bg" id="m-tx"><div class="modal"><div class="mt">Nova transação</div><div style="display:flex;gap:6px;margin-bottom:11px;"><button id="tp-r" onclick="setTipo('receita')" style="flex:1;padding:7px;border-radius:var(--rsm);font-size:13px;border:.5px solid #97C459;background:var(--glight);color:var(--gtext);cursor:pointer;font-weight:500;">↑ Receita</button><button id="tp-d" onclick="setTipo('despesa')" style="flex:1;padding:7px;border-radius:var(--rsm);font-size:13px;border:.5px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;">↓ Despesa</button></div><div class="fg"><label class="fl">Descrição</label><input class="fi" id="tx-dc" placeholder="Ex: Salário, iFood..."></div><div class="fg"><label class="fl">Valor (R$)</label><input class="fi" type="number" id="tx-vl" min="0" step="0.01"></div><div class="fg"><label class="fl">Categoria</label><select class="fi" id="tx-ct"><option>Alimentação</option><option>Moradia</option><option>Transporte</option><option>Lazer</option><option>Saúde</option><option>Educação</option><option>Freela</option><option>Salário</option><option>Outro</option></select></div><div class="fg"><label class="fl">Data</label><input class="fi" type="date" id="tx-dt"></div><div class="ma"><button class="btns" onclick="fecharModal('m-tx')">Cancelar</button><button class="btnp" id="tx-btn" onclick="salvarTx()">Salvar</button></div></div></div>
+      <div class="modal-bg" id="m-meta"><div class="modal"><div class="mt">Nova meta</div><div class="fg"><label class="fl">Nome</label><input class="fi" id="me-nm" placeholder="Ex: Notebook, Viagem..."></div><div class="fg"><label class="fl">Valor total (R$)</label><input class="fi" type="number" id="me-tt"></div><div class="fg"><label class="fl">Já guardei (R$)</label><input class="fi" type="number" id="me-at" value="0"></div><div class="fg"><label class="fl">Prazo</label><input class="fi" type="month" id="me-pr"></div><div class="ma"><button class="btns" onclick="fecharModal('m-meta')">Cancelar</button><button class="btnp" id="meta-btn" onclick="salvarMeta()">Salvar</button></div></div></div>
+      <div class="modal-bg" id="m-dep"><div class="modal"><div class="mt" id="dp-ti">Depositar</div><div class="fg"><label class="fl">Valor (R$)</label><input class="fi" type="number" id="dp-vl"></div><div class="ma"><button class="btns" onclick="fecharModal('m-dep')">Cancelar</button><button class="btnp" onclick="confirmarDep()">Confirmar</button></div></div></div>
+      <div class="modal-bg" id="m-hab"><div class="modal"><div class="mt">Novo hábito</div><div class="fg"><label class="fl">Nome</label><input class="fi" id="hb-nm" placeholder="Ex: Estudar inglês..."></div><div class="fg"><label class="fl">Ícone</label><select class="fi" id="hb-ic"><option value="ti-book">📚 Estudar</option><option value="ti-code">💻 Programar</option><option value="ti-run">🏃 Exercitar</option><option value="ti-droplet">💧 Beber água</option><option value="ti-currency-dollar">💰 Não gastar</option><option value="ti-briefcase">💼 Candidatar vagas</option></select></div><div class="ma"><button class="btns" onclick="fecharModal('m-hab')">Cancelar</button><button class="btnp" id="hab-btn" onclick="salvarHabito()">Salvar</button></div></div></div>
+
+      <div class="loading-overlay" id="loading-ov"><div class="spinner"></div><div style="font-size:13px;color:var(--text2);" id="loading-txt">Carregando...</div></div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="tst"></div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged, signOut, updateProfile } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, doc, setDoc, getDoc, addDoc, deleteDoc, updateDoc, collection, query, orderBy, serverTimestamp, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDpZt0aIbx_z3kOgBFkVy-FFZGxwfLx4_A",
+  authDomain: "viver-bem-76a26.firebaseapp.com",
+  projectId: "viver-bem-76a26",
+  storageBucket: "viver-bem-76a26.firebasestorage.app",
+  messagingSenderId: "37972662669",
+  appId: "1:37972662669:web:a49223ffae7776379945c4"
+};
+
+const fbApp = initializeApp(firebaseConfig);
+const auth = getAuth(fbApp);
+const db = getFirestore(fbApp);
+
+let uid=null,txs=[],metas=[],habitos=[],tipoTx='receita',depMetaId=null,tabAtual='entrar',dark=false;
+let unsubTx=null,unsubMetas=null,unsubHabs=null;
+const R=v=>'R$ '+Math.round(v).toLocaleString('pt-BR');
+const p2=n=>String(n).padStart(2,'0');
+const fmtD=d=>{if(!d)return'';const[y,m,di]=d.split('-');return di+'/'+m+'/'+y;};
+const HJ=new Date().getDay();
+
+function toast(m){const t=document.getElementById('tst');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+function abrirModal(id){document.getElementById(id).classList.add('open');}
+function fecharModal(id){document.getElementById(id).classList.remove('open');}
+window.fecharModal=fecharModal;window.abrirModal=abrirModal;
+
+function toggleDark(){
+  dark=!dark;
+  document.getElementById('wrap').classList.toggle('dark',dark);
+  document.body.style.background=dark?'#111':'#f5f4f0';
+  document.getElementById('dki').className=dark?'ti ti-sun':'ti ti-moon';
+  document.getElementById('dkt').textContent=dark?'Clarear':'Escurecer';
+  const chk=document.getElementById('cfg-dk');if(chk)chk.checked=dark;
+  const bg=document.getElementById('tgl-bg'),dot=document.getElementById('tgl-dot');
+  if(bg)bg.style.background=dark?'var(--green)':'var(--border)';
+  if(dot)dot.style.transform=dark?'translateX(17px)':'translateX(0)';
+}
+window.toggleDark=toggleDark;
+
+function mostrarApp(user){
+  document.getElementById('tela-login').style.display='none';
+  document.getElementById('tela-app').style.display='flex';
+  const nome=user.displayName||user.email.split('@')[0];
+  ['sb-av','cfg-av'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=nome[0].toUpperCase();});
+  ['sb-nm','cfg-nm'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=nome;});
+  const ce=document.getElementById('cfg-em');if(ce)ce.textContent=user.email;
+  iniciarListeners();renderDash();initRotina();
+}
+
+function mostrarLogin(){
+  document.getElementById('tela-login').style.display='flex';
+  document.getElementById('tela-app').style.display='none';
+}
+
+function showErr(msg){const b=document.getElementById('err');b.style.display='flex';document.getElementById('err-txt').textContent=msg;document.getElementById('suc').style.display='none';}
+function showSuc(msg){const b=document.getElementById('suc');b.style.display='flex';document.getElementById('suc-txt').textContent=msg;document.getElementById('err').style.display='none';}
+function tradErr(c){const e={'auth/user-not-found':'Usuário não encontrado.','auth/wrong-password':'Senha incorreta.','auth/email-already-in-use':'E-mail já cadastrado.','auth/weak-password':'Senha fraca (mín. 6 caracteres).','auth/invalid-email':'E-mail inválido.','auth/popup-closed-by-user':'Login cancelado.','auth/network-request-failed':'Sem conexão.','auth/invalid-credential':'E-mail ou senha incorretos.','auth/too-many-requests':'Muitas tentativas. Tente mais tarde.'};return e[c]||'Erro ao autenticar.';}
+
+window.setTab=(t)=>{tabAtual=t;document.getElementById('tab-e').classList.toggle('active',t==='entrar');document.getElementById('tab-c').classList.toggle('active',t==='criar');document.getElementById('campo-nome').style.display=t==='criar'?'block':'none';document.getElementById('campo-conf').style.display=t==='criar'?'block':'none';document.getElementById('esqueci-wrap').style.display=t==='entrar'?'block':'none';document.getElementById('btn-acao').textContent=t==='criar'?'Criar conta':'Entrar';document.getElementById('err').style.display='none';document.getElementById('suc').style.display='none';};
+
+window.loginGoogle=async()=>{try{const p=new GoogleAuthProvider();const r=await signInWithPopup(auth,p);await criarPerfil(r.user);}catch(e){showErr(tradErr(e.code));}};
+window.acaoEmail=async()=>{const email=document.getElementById('inp-email').value.trim(),senha=document.getElementById('inp-senha').value,btn=document.getElementById('btn-acao');if(!email||!senha){showErr('Preencha e-mail e senha.');return;}btn.disabled=true;btn.textContent='Aguarde...';try{if(tabAtual==='entrar'){const r=await signInWithEmailAndPassword(auth,email,senha);await criarPerfil(r.user);}else{const nome=document.getElementById('inp-nome').value.trim(),conf=document.getElementById('inp-conf').value;if(!nome){showErr('Digite seu nome.');btn.disabled=false;btn.textContent='Criar conta';return;}if(senha!==conf){showErr('Senhas não coincidem.');btn.disabled=false;btn.textContent='Criar conta';return;}if(senha.length<6){showErr('Senha deve ter mínimo 6 caracteres.');btn.disabled=false;btn.textContent='Criar conta';return;}const r=await createUserWithEmailAndPassword(auth,email,senha);await updateProfile(r.user,{displayName:nome});await criarPerfil(r.user);}}catch(e){showErr(tradErr(e.code));}btn.disabled=false;btn.textContent=tabAtual==='entrar'?'Entrar':'Criar conta';};
+window.esqueci=async()=>{const email=document.getElementById('inp-email').value.trim();if(!email){showErr('Digite seu e-mail primeiro.');return;}try{await sendPasswordResetEmail(auth,email);showSuc('E-mail de recuperação enviado!');}catch(e){showErr(tradErr(e.code));}};
+window.logout=async()=>{if(unsubTx)unsubTx();if(unsubMetas)unsubMetas();if(unsubHabs)unsubHabs();txs=[];metas=[];habitos=[];await signOut(auth);mostrarLogin();toast('Até logo! 👋');};
+
+async function criarPerfil(user){try{const ref=doc(db,'usuarios',user.uid,'config','perfil');const snap=await getDoc(ref);if(!snap.exists())await setDoc(ref,{nome:user.displayName||user.email.split('@')[0],email:user.email,criadoEm:serverTimestamp()});}catch(e){console.log(e);}}
+
+function iniciarListeners(){
+  if(!uid)return;
+  unsubTx=onSnapshot(query(collection(db,'usuarios',uid,'transacoes'),orderBy('criadoEm','desc')),snap=>{txs=snap.docs.map(d=>({id:d.id,...d.data()}));renderTx();renderDash();renderRel();renderSob();});
+  unsubMetas=onSnapshot(collection(db,'usuarios',uid,'metas'),snap=>{metas=snap.docs.map(d=>({id:d.id,...d.data()}));renderMetas();renderDash();});
+  unsubHabs=onSnapshot(collection(db,'usuarios',uid,'habitos'),snap=>{habitos=snap.docs.map(d=>({id:d.id,...d.data()}));renderHab();});
+}
+
+window.ir=(pg,btn)=>{document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));document.getElementById('page-'+pg).classList.add('active');if(btn)btn.classList.add('active');};
+
+function renderDash(){const h=new Date().getHours();const g=h>=5&&h<12?'Bom dia! 🌅':h>=12&&h<18?'Boa tarde! ☀️':'Boa noite! 🌙';const dg=document.getElementById('dg');if(dg)dg.textContent=g;const dias=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'],ms=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'],now=new Date();const dd=document.getElementById('dd');if(dd)dd.textContent=dias[now.getDay()]+', '+now.getDate()+' de '+ms[now.getMonth()]+' de '+now.getFullYear();const rec=txs.filter(t=>t.tipo==='receita').reduce((a,t)=>a+t.val,0),des=txs.filter(t=>t.tipo==='despesa').reduce((a,t)=>a+t.val,0);const ds=document.getElementById('d-sal'),dr=document.getElementById('d-rec'),dd2=document.getElementById('d-des');if(ds)ds.textContent=R(rec-des);if(dr)dr.textContent=R(rec);if(dd2)dd2.textContent=R(des);const dtx=document.getElementById('d-txs');if(dtx)dtx.innerHTML=txs.slice(0,4).map(t=>`<div style="display:flex;align-items:center;gap:8px;"><div style="flex:1;font-size:13px;color:var(--text);">${t.desc}</div><div style="font-size:12px;font-weight:500;color:${t.tipo==='receita'?'var(--green)':'var(--red)'};">${t.tipo==='receita'?'+':'-'}${R(t.val)}</div></div>`).join('')||'<div style="font-size:13px;color:var(--text2);text-align:center;padding:.5rem;">Nenhuma transação ainda</div>';const dmt=document.getElementById('d-mts');if(dmt)dmt.innerHTML=metas.slice(0,3).map(m=>{const p=Math.min(100,Math.round(m.atual/m.total*100));return`<div><div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text);margin-bottom:4px;"><span>${m.nome}</span><span>${p}%</span></div><div class="pb"><div class="pf" style="width:${p}%;background:var(--green);"></div></div></div>`;}).join('')||'<div style="font-size:13px;color:var(--text2);text-align:center;padding:.5rem;">Nenhuma meta ainda</div>';}
+
+window.setTipo=(t)=>{tipoTx=t;document.getElementById('tp-r').style.cssText=t==='receita'?'flex:1;padding:7px;border-radius:7px;font-size:13px;border:.5px solid #97C459;background:var(--glight);color:var(--gtext);cursor:pointer;font-weight:500;':'flex:1;padding:7px;border-radius:7px;font-size:13px;border:.5px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;';document.getElementById('tp-d').style.cssText=t==='despesa'?'flex:1;padding:7px;border-radius:7px;font-size:13px;border:.5px solid #F09595;background:var(--rlight);color:var(--rtext);cursor:pointer;font-weight:500;':'flex:1;padding:7px;border-radius:7px;font-size:13px;border:.5px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;';};
+window.salvarTx=async()=>{const desc=document.getElementById('tx-dc').value.trim(),val=parseFloat(document.getElementById('tx-vl').value)||0,cat=document.getElementById('tx-ct').value,data=document.getElementById('tx-dt').value;if(!desc||!val){toast('⚠️ Preencha descrição e valor!');return;}const btn=document.getElementById('tx-btn');btn.disabled=true;btn.textContent='Salvando...';try{await addDoc(collection(db,'usuarios',uid,'transacoes'),{desc,val,cat,tipo:tipoTx,data,criadoEm:serverTimestamp()});fecharModal('m-tx');document.getElementById('tx-dc').value='';document.getElementById('tx-vl').value='';toast('✓ Transação salva!');}catch(e){toast('Erro: '+e.message);}btn.disabled=false;btn.textContent='Salvar';};
+window.delTx=async(id)=>{try{await deleteDoc(doc(db,'usuarios',uid,'transacoes',id));toast('✓ Removida!');}catch(e){toast('Erro ao remover.');}};
+
+function renderTx(){const bus=(document.getElementById('t-busca')||{value:''}).value.toLowerCase(),fil=(document.getElementById('t-fil')||{value:''}).value;const f=txs.filter(t=>(!bus||(t.desc?.toLowerCase().includes(bus)||t.cat?.toLowerCase().includes(bus)))&&(!fil||t.tipo===fil));const rec=txs.filter(t=>t.tipo==='receita').reduce((a,t)=>a+t.val,0),des=txs.filter(t=>t.tipo==='despesa').reduce((a,t)=>a+t.val,0);const tr=document.getElementById('t-rec'),td=document.getElementById('t-des'),ts=document.getElementById('t-sal');if(tr)tr.textContent=R(rec);if(td)td.textContent=R(des);if(ts){ts.textContent=R(rec-des);ts.style.color=(rec-des)>=0?'var(--green)':'var(--red)';}const bd=document.getElementById('t-body');if(!bd)return;bd.innerHTML=f.length?f.map(t=>`<tr style="border-bottom:.5px solid var(--border);"><td style="padding:8px 12px;font-size:13px;color:var(--text);">${t.desc}</td><td style="padding:8px 12px;"><span style="font-size:11px;padding:2px 8px;border-radius:999px;background:var(--bg2);color:var(--text2);">${t.cat}</span></td><td style="padding:8px 12px;font-size:12px;color:var(--text2);">${fmtD(t.data)}</td><td style="padding:8px 12px;font-size:13px;font-weight:500;text-align:right;color:${t.tipo==='receita'?'var(--green)':'var(--red)'};">${t.tipo==='receita'?'+':'-'}${R(t.val)}</td><td style="padding:8px 12px;"><button onclick="delTx('${t.id}')" style="background:transparent;border:none;cursor:pointer;color:var(--text2);font-size:15px;"><i class="ti ti-trash"></i></button></td></tr>`).join(''):'<tr><td colspan="5" style="padding:1.5rem;text-align:center;color:var(--text2);font-size:13px;">Nenhuma transação encontrada.</td></tr>';if(!document.getElementById('tx-dt').value)document.getElementById('tx-dt').value=new Date().toISOString().split('T')[0];}
+window.renderTx=renderTx;
+
+window.salvarMeta=async()=>{const nome=document.getElementById('me-nm').value.trim(),total=parseFloat(document.getElementById('me-tt').value)||0,atual=Math.min(parseFloat(document.getElementById('me-at').value)||0,total),prazo=document.getElementById('me-pr').value;if(!nome||!total){toast('⚠️ Preencha nome e valor!');return;}const btn=document.getElementById('meta-btn');btn.disabled=true;btn.textContent='Salvando...';try{await addDoc(collection(db,'usuarios',uid,'metas'),{nome,total,atual,prazo,criadoEm:serverTimestamp()});fecharModal('m-meta');document.getElementById('me-nm').value='';document.getElementById('me-tt').value='';document.getElementById('me-at').value='0';toast('✓ Meta salva!');}catch(e){toast('Erro: '+e.message);}btn.disabled=false;btn.textContent='Salvar';};
+window.delMeta=async(id)=>{try{await deleteDoc(doc(db,'usuarios',uid,'metas',id));toast('✓ Meta removida!');}catch(e){toast('Erro.');}};
+window.abrirDep=(id)=>{depMetaId=id;const m=metas.find(m=>m.id===id);document.getElementById('dp-ti').textContent='Depositar em: '+m.nome;document.getElementById('dp-vl').value='';abrirModal('m-dep');};
+window.confirmarDep=async()=>{const val=parseFloat(document.getElementById('dp-vl').value)||0;if(!val||!depMetaId)return;const m=metas.find(m=>m.id===depMetaId);if(!m)return;try{await updateDoc(doc(db,'usuarios',uid,'metas',depMetaId),{atual:Math.min(m.total,m.atual+val)});fecharModal('m-dep');toast('✓ Valor adicionado!');}catch(e){toast('Erro.');}};
+
+function renderMetas(){const g=metas.reduce((a,m)=>a+m.atual,0),n=metas.reduce((a,m)=>a+m.total,0),c=metas.filter(m=>m.atual>=m.total).length;const mg=document.getElementById('m-g'),mn=document.getElementById('m-n'),mc=document.getElementById('m-c');if(mg)mg.textContent=R(g);if(mn)mn.textContent=R(n);if(mc)mc.textContent=c;const cores=[['var(--blight)','var(--blue)'],['var(--glight)','var(--green)'],['var(--olight)','var(--orange)'],['var(--plight)','var(--purple)']];const gr=document.getElementById('m-grid');if(!gr)return;if(!metas.length){gr.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--text2);font-size:13px;">Nenhuma meta ainda. Crie a primeira!</div>';return;}gr.innerHTML=metas.map((m,i)=>{const p=Math.min(100,Math.round(m.atual/m.total*100)),[bg,cor]=cores[i%cores.length],ok=m.atual>=m.total;return`<div class="card" style="${ok?'border:2px solid var(--green);':''}"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;"><div style="font-size:13px;font-weight:500;color:var(--text);">${m.nome}</div><div style="display:flex;gap:5px;">${!ok?`<button onclick="abrirDep('${m.id}')" style="background:transparent;border:none;cursor:pointer;color:var(--text2);font-size:15px;"><i class="ti ti-circle-plus"></i></button>`:''}<button onclick="delMeta('${m.id}')" style="background:transparent;border:none;cursor:pointer;color:var(--text2);font-size:15px;"><i class="ti ti-trash"></i></button></div></div>${ok?`<div style="background:var(--glight);border-radius:var(--rsm);padding:5px 9px;font-size:12px;color:var(--gtext);margin-bottom:8px;"><i class="ti ti-circle-check"></i> Concluída! 🎉</div>`:''}<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;"><span style="font-weight:500;color:var(--text);">${R(m.atual)}</span><span style="color:var(--text2);">de ${R(m.total)}</span></div><div class="pb"><div class="pf" style="width:${p}%;background:${cor};"></div></div><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-top:4px;"><span>${p}%</span><span>${ok?'Parabéns!':'Falta '+R(m.total-m.atual)}</span></div></div>`;}).join('');}
+
+window.salvarHabito=async()=>{const nome=document.getElementById('hb-nm').value.trim(),icone=document.getElementById('hb-ic').value;if(!nome){toast('⚠️ Digite o nome!');return;}const btn=document.getElementById('hab-btn');btn.disabled=true;btn.textContent='Salvando...';try{await addDoc(collection(db,'usuarios',uid,'habitos'),{nome,icone,dias:[0,0,0,0,0,0,0],streak:0,criadoEm:serverTimestamp()});fecharModal('m-hab');document.getElementById('hb-nm').value='';toast('✓ Hábito salvo!');}catch(e){toast('Erro: '+e.message);}btn.disabled=false;btn.textContent='Salvar';};
+window.togDia=async(id,di)=>{const h=habitos.find(h=>h.id===id);if(!h)return;const nd=[...h.dias];nd[di]=nd[di]?0:1;let s=0;for(let i=HJ;i>=0;i--){if(nd[i])s++;else break;}try{await updateDoc(doc(db,'usuarios',uid,'habitos',id),{dias:nd,streak:s});}catch(e){toast('Erro.');}};
+window.delHab=async(id)=>{try{await deleteDoc(doc(db,'usuarios',uid,'habitos',id));toast('✓ Removido!');}catch(e){toast('Erro.');}};
+
+function renderHab(){const fj=habitos.filter(h=>h.dias[HJ]).length,mk=habitos.length?Math.max(...habitos.map(h=>h.streak||0)):0,tot=habitos.reduce((a,h)=>a+(h.dias||[]).reduce((b,d)=>b+d,0),0),tx=habitos.length?Math.round(tot/(habitos.length*7)*100):0;const hh=document.getElementById('h-hj'),hs=document.getElementById('h-st'),ht=document.getElementById('h-tx');if(hh)hh.textContent=fj;if(hs)hs.textContent=mk+' dias';if(ht)ht.textContent=tx+'%';const dias=['D','S','T','Q','Q','S','S'],cores=[['var(--blight)','var(--blue)'],['var(--glight)','var(--green)'],['var(--olight)','var(--orange)'],['var(--plight)','var(--purple)'],['var(--rlight)','var(--red)']],hl=document.getElementById('h-list');if(!hl)return;if(!habitos.length){hl.innerHTML='<div style="text-align:center;padding:2rem;color:var(--text2);font-size:13px;">Nenhum hábito ainda. Crie o primeiro!</div>';return;}hl.innerHTML=habitos.map((h,i)=>{const[bg,cor]=cores[i%cores.length];return`<div class="card"><div style="display:flex;align-items:center;gap:9px;margin-bottom:9px;"><div style="width:32px;height:32px;border-radius:var(--rsm);background:${bg};display:flex;align-items:center;justify-content:center;"><i class="ti ${h.icone}" style="color:${cor};font-size:14px;"></i></div><div style="flex:1;"><div style="font-size:13px;font-weight:500;color:var(--text);">${h.nome}</div><div style="font-size:11px;color:var(--text2);"><i class="ti ti-flame" style="color:#D85A30;"></i> ${h.streak||0} dias seguidos</div></div><button onclick="delHab('${h.id}')" style="background:transparent;border:none;cursor:pointer;color:var(--text2);font-size:15px;"><i class="ti ti-trash"></i></button></div><div style="display:flex;gap:4px;align-items:center;">${dias.map((d,di)=>`<div onclick="togDia('${h.id}',${di})" style="width:27px;height:27px;border-radius:50%;border:${di===HJ?'2px solid '+cor:'.5px solid var(--border)'};background:${(h.dias||[])[di]?cor:'transparent'};display:flex;align-items:center;justify-content:center;font-size:10px;color:${(h.dias||[])[di]?'#fff':'var(--text2)'};cursor:pointer;">${d}</div>`).join('')}<button onclick="togDia('${h.id}',${HJ})" style="margin-left:auto;padding:4px 10px;border-radius:var(--rsm);font-size:11px;border:.5px solid ${(h.dias||[])[HJ]?cor:'var(--border)'};background:${(h.dias||[])[HJ]?bg:'transparent'};color:${(h.dias||[])[HJ]?cor:'var(--text2)'};cursor:pointer;">${(h.dias||[])[HJ]?'✓ Feito':'Marcar hoje'}</button></div></div>`;}).join('');}
+
+function renderRel(){const rec=txs.filter(t=>t.tipo==='receita').reduce((a,t)=>a+t.val,0),des=txs.filter(t=>t.tipo==='despesa').reduce((a,t)=>a+t.val,0),sob=rec-des,pou=rec>0?Math.round(sob/rec*100):0;const rr=document.getElementById('r-rec'),rd=document.getElementById('r-des'),rs=document.getElementById('r-sob'),rp=document.getElementById('r-pou');if(rr)rr.textContent=R(rec);if(rd)rd.textContent=R(des);if(rs){rs.textContent=R(sob);rs.style.color=sob>=0?'var(--green)':'var(--red)';}if(rp)rp.textContent=pou+'%';const cats={};txs.filter(t=>t.tipo==='despesa').forEach(t=>{cats[t.cat]=(cats[t.cat]||0)+t.val;});const mx=Math.max(...Object.values(cats),1),clrs={'Alimentação':'var(--green)','Moradia':'var(--blue)','Transporte':'var(--orange)','Lazer':'var(--purple)','Saúde':'#E24B4A','Freela':'var(--green)','Outro':'var(--text2)'};const rc=document.getElementById('r-cat');if(rc)rc.innerHTML=Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([cat,val])=>`<div style="display:flex;align-items:center;gap:9px;margin-bottom:7px;"><div style="font-size:13px;color:var(--text);width:90px;flex-shrink:0;">${cat}</div><div style="flex:1;height:6px;background:var(--bg2);border-radius:999px;overflow:hidden;"><div style="height:100%;width:${Math.round(val/mx*100)}%;background:${clrs[cat]||'var(--text2)'};border-radius:999px;"></div></div><div style="font-size:12px;font-weight:500;color:var(--text);min-width:60px;text-align:right;">${R(val)}</div></div>`).join('')||'<div style="font-size:13px;color:var(--text2);text-align:center;padding:.5rem;">Nenhum gasto ainda.</div>';}
+
+window.gerarRel=async()=>{const btn=document.getElementById('r-btn');btn.disabled=true;btn.innerHTML='<i class="ti ti-loader"></i> Analisando...';document.getElementById('r-con').innerHTML='<div style="display:flex;gap:5px;justify-content:center;padding:1.5rem;"><div style="width:7px;height:7px;border-radius:50%;background:var(--text2);animation:b 1.2s infinite;"></div><div style="width:7px;height:7px;border-radius:50%;background:var(--text2);animation:b 1.2s .2s infinite;"></div><div style="width:7px;height:7px;border-radius:50%;background:var(--text2);animation:b 1.2s .4s infinite;"></div></div><style>@keyframes b{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-7px)}}</style>';const rec=txs.filter(t=>t.tipo==='receita').reduce((a,t)=>a+t.val,0),des=txs.filter(t=>t.tipo==='despesa').reduce((a,t)=>a+t.val,0),cats={};txs.filter(t=>t.tipo==='despesa').forEach(t=>{cats[t.cat]=(cats[t.cat]||0)+t.val;});try{const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:800,messages:[{role:'user',content:`Analise: Receita R$${rec}, Despesas R$${des}. Categorias: ${JSON.stringify(cats)}. Metas: ${metas.map(m=>m.nome+' '+Math.round(m.atual/m.total*100)+'%').join(', ')||'Nenhuma'}. Retorne SOMENTE JSON: {"insights":[{"tipo":"ok|atencao|erro|dica","titulo":"...","descricao":"..."}]}`}]}));const data=await res.json();const text=data.content.map(i=>i.text||'').join('').replace(/```json|```/g,'').trim();const parsed=JSON.parse(text);const cfg={ok:{bg:'var(--glight)',fg:'var(--gtext)',ic:'ti-circle-check'},atencao:{bg:'var(--olight)',fg:'var(--otext)',ic:'ti-alert-triangle'},erro:{bg:'var(--rlight)',fg:'var(--rtext)',ic:'ti-alert-circle'},dica:{bg:'var(--blight)',fg:'var(--btext)',ic:'ti-bulb'}};document.getElementById('r-con').innerHTML='<div style="display:flex;flex-direction:column;gap:8px;">'+parsed.insights.map(ins=>{const c=cfg[ins.tipo]||cfg.dica;return`<div style="display:flex;gap:9px;padding:9px 11px;border-radius:var(--rsm);background:${c.bg};"><i class="ti ${c.ic}" style="color:${c.fg};font-size:16px;flex-shrink:0;margin-top:1px;"></i><div><div style="font-size:13px;font-weight:500;color:${c.fg};margin-bottom:2px;">${ins.titulo}</div><div style="font-size:12px;color:${c.fg};opacity:.85;line-height:1.5;">${ins.descricao}</div></div></div>`;}).join('')+'</div>';}catch(e){document.getElementById('r-con').innerHTML='<div style="text-align:center;padding:1rem;color:var(--text2);font-size:13px;">Erro ao gerar análise.</div>';}btn.disabled=false;btn.innerHTML='<i class="ti ti-refresh"></i> Atualizar';};
+
+function renderSob(){const rec=txs.filter(t=>t.tipo==='receita').reduce((a,t)=>a+t.val,0),des=txs.filter(t=>t.tipo==='despesa').reduce((a,t)=>a+t.val,0),sal=rec-des,m=Math.floor(sal/780);const ss=document.getElementById('sv-s'),st=document.getElementById('sv-t'),sa=document.getElementById('sv-al');if(ss)ss.textContent=R(sal);if(st)st.textContent=m>0?'~'+m+' meses':'Insuficiente';if(sa)sa.innerHTML=`Sua reserva dura aproximadamente <strong>${m} meses</strong>. ${m<3?'⚠️ Reduza os gastos agora!':'Continue economizando.'}`;const cortes=[{n:'Netflix',v:55,d:'Cancela e volta quando tiver renda.'},{n:'iFood',v:87,d:'Cozinhar em casa custa 3x menos.'},{n:'Lazer digital',v:120,d:'Pause compras de jogos.'},{n:'Spotify',v:22,d:'YouTube Music gratuito resolve.'}];const sc=document.getElementById('sv-cor');if(sc)sc.innerHTML=cortes.map(c=>`<div style="display:flex;align-items:center;gap:9px;padding:8px 10px;background:var(--bg2);border-radius:var(--rsm);"><div style="flex:1;"><div style="font-size:13px;color:var(--text);">${c.n}</div><div style="font-size:11px;color:var(--text2);">${c.d}</div></div><div style="font-size:12px;font-weight:500;color:var(--red);">-${R(c.v)}</div></div>`).join('');const checks=['Aplicar em 3 vagas hoje','Estudar 1h','Cancelar Netflix','Atualizar LinkedIn','Não pedir delivery hoje'];const ck=document.getElementById('sv-chk');if(ck)ck.innerHTML=checks.map(c=>`<label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text);cursor:pointer;"><input type="checkbox" style="accent-color:var(--green);" onchange="this.parentElement.style.textDecoration=this.checked?'line-through':'none';this.parentElement.style.color=this.checked?'var(--text2)':'var(--text)'"> ${c}</label>`).join('');}
+
+const frases=[{t:'"Tudo o que a sua mão encontrar para fazer, faça-o com toda a sua força."',r:'— Eclesiastes 9:10'},{t:'"Não há nada melhor para o homem do que encontrar satisfação no seu trabalho."',r:'— Eclesiastes 2:24'},{t:'"Dois são melhores do que um, porque têm boa recompensa pelo seu trabalho."',r:'— Eclesiastes 4:9'},{t:'"Semeia de manhã a tua semente, e à tarde não retires a tua mão."',r:'— Eclesiastes 11:6'},{t:'"Há tempo para cada propósito debaixo do céu."',r:'— Eclesiastes 3:1'}];
+const curios=[{tp:'Curiosidade',ic:'🧠',tx:'Estudar 25 min por dia equivale a mais de 150 horas de aprendizado em um ano.'},{tp:'Pergunta reflexiva',ic:'💭',tx:'Se você pudesse dominar uma habilidade hoje, qual seria e como mudaria sua vida?'},{tp:'Curiosidade',ic:'🌍',tx:'Portugal tem mais de 600 mil brasileiros. É o destino mais acessível para intercâmbio.'},{tp:'Pergunta reflexiva',ic:'🎯',tx:'Qual é o menor passo que você pode dar agora para chegar mais perto do seu objetivo?'},{tp:'Curiosidade',ic:'⏱',tx:'A técnica Pomodoro (25 min foco + 5 min pausa) ainda é das mais eficientes para estudos.'},{tp:'Pergunta reflexiva',ic:'🚀',tx:'Daqui a 1 ano, o que você quer ter feito diferente a partir de hoje?'}];
+let ci=0,eest={ingles:{seg:0,on:false,iv:null,ses:0},prog:{seg:0,on:false,iv:null,ses:0},outro:{seg:0,on:false,iv:null,ses:0}};
+const eMats=[{id:'ingles',nome:'Inglês',ic:'ti-language',bg:'var(--blight)',cor:'var(--blue)',meta:7200},{id:'prog',nome:'Programação',ic:'ti-code',bg:'var(--glight)',cor:'var(--green)',meta:7200},{id:'outro',nome:'Outro',ic:'ti-book',bg:'var(--plight)',cor:'var(--purple)',meta:3600}];
+
+window.nextCurio=()=>{ci=(ci+1)%curios.length;const c=curios[ci];const a=document.getElementById('c-ico'),b=document.getElementById('c-tip'),cc=document.getElementById('c-txt');if(a)a.textContent=c.ic;if(b)b.textContent=c.tp;if(cc)cc.textContent=c.tx;};
+window.togTimer=(id)=>{const e=eest[id];if(e.on){clearInterval(e.iv);e.on=false;}else{e.ses++;e.on=true;e.iv=setInterval(()=>{e.seg++;updEstudo(id);updTotE();},1000);}updEstudo(id);};
+window.rstTimer=(id)=>{const e=eest[id];clearInterval(e.iv);e.on=false;e.seg=0;updEstudo(id);updTotE();};
+
+function updEstudo(id){const e=eest[id],m=eMats.find(x=>x.id===id),p=Math.min(100,Math.round(e.seg/m.meta*100));const rr=document.getElementById('er-'+id),bb=document.getElementById('eb-'+id),bt=document.getElementById('et-'+id);if(rr)rr.textContent=p2(Math.floor(e.seg/3600))+':'+p2(Math.floor((e.seg%3600)/60))+':'+p2(e.seg%60);if(bt){bt.style.background=e.on?'var(--rlight)':'var(--glight)';bt.style.color=e.on?'var(--red)':'var(--green)';bt.innerHTML=e.on?'<i class="ti ti-player-pause"></i> Pausar':'<i class="ti ti-player-play"></i> Iniciar';}if(bb){bb.style.width=p+'%';bb.style.background=m.cor;}}
+function updTotE(){const ts=Object.values(eest).reduce((a,e)=>a+e.seg,0),se=Object.values(eest).reduce((a,e)=>a+e.ses,0),p=Math.min(100,Math.round(ts/(4*3600)*100));const et=document.getElementById('e-tot'),es=document.getElementById('e-ses'),ep=document.getElementById('e-pct');if(et)et.textContent=p2(Math.floor(ts/3600))+'h '+p2(Math.floor((ts%3600)/60))+'m';if(es)es.textContent=se;if(ep)ep.textContent=p+'%';}
+
+function initRotina(){const h=new Date().getHours(),g=h>=5&&h<12?'Bom dia! 🌅':h>=12&&h<18?'Boa tarde! ☀️':'Boa noite! 🌙';const rg=document.getElementById('rot-g');if(rg)rg.textContent=g;const dias2=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],ms2=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'],nw=new Date();const rd=document.getElementById('rot-d');if(rd)rd.textContent=dias2[nw.getDay()]+', '+nw.getDate()+' de '+ms2[nw.getMonth()]+' de '+nw.getFullYear();const fi=nw.getDate()%frases.length,rf=document.getElementById('rot-f'),rr=document.getElementById('rot-r');if(rf)rf.textContent=frases[fi].t;if(rr)rr.textContent=frases[fi].r;window.nextCurio();const re=document.getElementById('rot-est');if(re)re.innerHTML=eMats.map(m=>`<div class="card"><div style="display:flex;align-items:center;gap:8px;margin-bottom:9px;"><div style="width:30px;height:30px;border-radius:var(--rsm);background:${m.bg};display:flex;align-items:center;justify-content:center;"><i class="ti ${m.ic}" style="color:${m.cor};font-size:14px;"></i></div><div style="font-size:13px;font-weight:500;color:var(--text);">${m.nome}</div></div><div style="font-size:20px;font-weight:500;text-align:center;letter-spacing:2px;color:var(--text);margin-bottom:7px;" id="er-${m.id}">00:00:00</div><div class="pb" style="margin-bottom:9px;"><div class="pf" id="eb-${m.id}" style="width:0%;background:${m.cor};"></div></div><div style="display:flex;gap:5px;"><button id="et-${m.id}" onclick="togTimer('${m.id}')" style="flex:1;padding:6px;border-radius:var(--rsm);font-size:12px;font-weight:500;border:none;cursor:pointer;background:var(--glight);color:var(--green);display:flex;align-items:center;justify-content:center;gap:4px;"><i class="ti ti-player-play"></i> Iniciar</button><button onclick="rstTimer('${m.id}')" style="padding:6px 9px;border-radius:var(--rsm);font-size:12px;border:.5px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;"><i class="ti ti-rotate"></i></button></div></div>`).join('');setInterval(()=>{const n=new Date(),rh=document.getElementById('rot-h');if(rh)rh.textContent=p2(n.getHours())+':'+p2(n.getMinutes())+':'+p2(n.getSeconds());},1000);}
+
+onAuthStateChanged(auth,(user)=>{if(user){uid=user.uid;mostrarApp(user);}else{mostrarLogin();}});
+</script>
+</body>
+</html>
